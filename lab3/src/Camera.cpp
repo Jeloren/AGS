@@ -34,8 +34,8 @@ void Camera::move(float dx, float dz) {
     float fwdX = -cos(phi);
     float fwdZ = -sin(phi);
     // Вектор "вправо"
-    float rightX = -sin(phi);
-    float rightZ = cos(phi);
+    float rightX = sin(phi);
+    float rightZ = -cos(phi);
 
     center.x += fwdX * dz + rightX * dx;
     center.z += fwdZ * dz + rightZ * dx;
