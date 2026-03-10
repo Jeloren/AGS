@@ -29,8 +29,9 @@ int lastMouseY = 0;
 
 // Инициализация объектов по кругу (как в методичке)
 void initApp() {
-    int count = 8;
+    int count = 14;
     float radius = 4.0f;
+
     for (int i = 0; i < count; i++) {
         // Вычисляем угол для каждого кубика
         float angle = 2.0f * 3.14159265f * i / count;
@@ -47,6 +48,36 @@ void initApp() {
         
         graphicObjects.push_back(obj);
     }
+
+    // пара красных кубиков ближе к центру, внутренний радиус ≈1
+    float innerRadius = 1.0f;
+    for (int i = 0; i < 2; i++) {
+        // Вычисляем угол для каждого кубика
+        float angle = i * 3.14159265f;          // 0 и π
+        // Считаем позицию
+        glm::vec3 pos(innerRadius * cos(angle),
+                      0.0f,
+                      innerRadius * sin(angle));
+        // Задаем цвет (красный)
+        glm::vec4 color(1.0f, 0.0f, 0.0f, 1.0f);
+        // Задаем угол поворота (пусть смотрят в центр или 0)
+        float rotAngle = 14.0f;
+
+        // Создаем объект, сразу передавая все аргументы в конструктор
+        GraphicObject obj(pos, rotAngle, color);
+        
+        graphicObjects.push_back(obj);
+    }
+    float angle = 4 * 3.14159265f;
+    glm::vec3 pos(innerRadius * cos(angle)/8,
+                      1.0f,
+                      innerRadius * sin(angle));
+        // Задаем цвет (зеленый)
+        glm::vec4 color(0.0f, 1.0f, 0.0f, 1.0f);
+        // Задаем угол поворота (пусть смотрят в центр или 0)
+        float rotAngle = 0.0f;
+    GraphicObject obj(pos, rotAngle, color);
+    graphicObjects.push_back(obj);
 }
 
 void display() {
