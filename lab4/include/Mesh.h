@@ -5,29 +5,20 @@
 #include <vector>
 
 using namespace std;
-// ����� ��� ������ � �����
+
 class Mesh
 {
 public:
-	// �����������
-	Mesh();
-	// �������� ���� �� �������� obj-�����
-	bool load(const string& filename);
-	// ����� ����
-	void drawOne();
+    Mesh();
+    bool load(const string& filename);
+    void drawOne();
+    
 private:
-	// ������ VAO-�������
-	GLuint vao;
-	// ������ VBO-������ ������
-	GLuint vertexBuffer;
-	// ������ VBO-������ ��������
-	GLuint indexBuffer;
-	// ���������� ������ � ����
-	int vertexCount;
-
-	// �������� ������ �� obj-�����
-	bool loadObjFile(const std::string& filename, std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
-
-	// �������� ������� OpenGL
-	void createBuffers(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
+    bool loadObjFile(const std::string& filename, std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
+    void createBuffers(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
+    
+    GLuint vao;
+    GLuint vertexBuffer;
+    GLuint indexBuffer;
+    int vertexCount;
 };

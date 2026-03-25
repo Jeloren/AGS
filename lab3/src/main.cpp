@@ -27,15 +27,23 @@ bool isRMBPressed = false;
 int lastMouseX = 0;
 int lastMouseY = 0;
 
-// Инициализация объектов по кругу (как в методичке)
+    std::vector<glm::vec3> scales = {
+        glm::vec3(0.5f, 0.5f, 0.5f), 
+        glm::vec3(0.8f, 0.8f, 0.8f),  
+        glm::vec3(1.0f, 1.0f, 1.0f),  
+        glm::vec3(1.2f, 1.2f, 1.2f),  
+        glm::vec3(1.5f, 1.5f, 1.5f),  
+        glm::vec3(0.7f, 1.5f, 0.7f), 
+        glm::vec3(1.5f, 0.5f, 1.5f),   
+        glm::vec3(0.8f, 0.8f, 1.5f)  
+    };
+
 void initApp() {
     int count = 8;
     float radius = 4.0f;
     for (int i = 0; i < count; i++) {
-        // Вычисляем угол для каждого кубика
         float angle = 2.0f * 3.14159265f * i / count;
         
-        // Считаем позицию
         glm::vec3 pos(radius * cos(angle), 0.0f, radius * sin(angle));
         // Задаем цвет (синий)
         glm::vec4 color(0.0f, 0.0f, 1.0f, 1.0f);
@@ -43,7 +51,7 @@ void initApp() {
         float rotAngle = 0.0f;
 
         // Создаем объект, сразу передавая все аргументы в конструктор
-        GraphicObject obj(pos, rotAngle, color);
+        GraphicObject obj(pos, rotAngle, color, scales[i]);
         
         graphicObjects.push_back(obj);
     }

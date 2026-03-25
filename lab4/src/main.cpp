@@ -86,6 +86,13 @@ void initGraphicObjects()
 	graphicObject.setPosition(vec3(-10, 0, 0));
 	graphicObject.setAngle(45.0);
 	graphicObjects.push_back(graphicObject);
+    // человечек мой
+	meshId = rm.loadMesh("example/MESHES/human/BodyMesh.obj");
+	graphicObject.setMeshId(meshId);
+	graphicObject.setColor(vec4(0, 0, 1, 1));
+	graphicObject.setPosition(vec3(4, 0, 6));
+	graphicObject.setAngle(90.0);
+	graphicObjects.push_back(graphicObject);
 }
 
 // Функция получения времени симуляции
