@@ -8,13 +8,13 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
-
+#include <vector>
+#include <cmath>
 using namespace glm;
 using namespace std;
 
 Shader shader;
 
-// КОНФИГУРАЦИЯ (легко меняется)
 glm::vec2 objOffset(0.0f, 0.0f);     // Начальная позиция
 glm::vec2 objSpeed(0.8f, 0.6f);      // Скорость по осям
 glm::vec4 red(1.0f, 0.2f, 0.2f, 1.0f); // Цвет 1 (красный)
@@ -26,7 +26,7 @@ int lastFpsTime = 0;
 int frameCount = 0;
 
 void drawObject();
-
+void drawFighter();
 void display() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f); // Слегка темный фон
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -40,6 +40,21 @@ void display() {
     shader.setUniform("color2", red);
 
     drawObject();
+
+    
+    glDisable(GL_DEPTH_TEST); // Отключаем глубину, чтобы не было конфликта
+    
+    // Передаем ту же самую переменную objOffset, чтобы фигура двигалась с квадратом
+    shader.setUniform("offset", objOffset); 
+    
+    // Цвета для истребителя (светло-серый и темно-серый)
+    shader.setUniform("color1", glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
+    shader.setUniform("color2", glm::vec4(0.2f, 0.2f, 0.2f, 1.0f));
+    
+    drawFighter();
+
+    glEnable(GL_DEPTH_TEST); // Включаем обратно
+    
     
     glutSwapBuffers();
 }
@@ -164,5 +179,60 @@ void drawObject() {
 
     glBindVertexArray(VAO_Index);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}
+
+void drawFighter() {
+    static bool init = true;
+    static GLuint VAO_Index = 0;
+    static GLuint VBO_Index = 0;
+    static int vertexCount = 0;
+
+    if (init) {
+        init = false;
+        std::vector<GLfloat> vertices;
+
+        // Центральный круг
+        int segments = 32;
+        float radius = 0.15f;
+        for (int i = 0; i < segments; i++) {
+            float theta1 = 2.0f * 3.1415926f * float(i) / float(segments);
+            float theta2 = 2.0f * 3.1415926f * float(i + 1) / float(segments);
+
+            vertices.push_back(0.0f); vertices.push_back(0.0f);
+            vertices.push_back(radius * cosf(theta1)); vertices.push_back(radius * sinf(theta1));
+            vertices.push_back(radius * cosf(theta2)); vertices.push_back(radius * sinf(theta2));
+        }
+
+        // Левое крыло
+        float wingWidth = 0.2f;
+        float wingHeight = 0.35f;
+        
+        vertices.push_back(-radius); vertices.push_back(0.0f);
+        vertices.push_back(-radius - wingWidth); vertices.push_back(wingHeight);
+        vertices.push_back(-radius - wingWidth); vertices.push_back(-wingHeight);
+
+        // Правое крыло
+        vertices.push_back(radius); vertices.push_back(0.0f);
+        vertices.push_back(radius + wingWidth); vertices.push_back(wingHeight);
+        vertices.push_back(radius + wingWidth); vertices.push_back(-wingHeight);
+
+        vertexCount = vertices.size() / 2;
+
+        glGenVertexArrays(1, &VAO_Index);
+        glBindVertexArray(VAO_Index);
+
+        glGenBuffers(1, &VBO_Index);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_Index);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glEnableVertexAttribArray(0);
+        
+        glBindVertexArray(0);
+    }
+
+    glBindVertexArray(VAO_Index);
+    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     glBindVertexArray(0);
 }

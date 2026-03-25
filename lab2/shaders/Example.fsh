@@ -19,9 +19,7 @@ void main ()
     // Для плавного перехода (градиента) вдоль этой линии:
     float gradient = (position.y - position.x) + 0.5;
     
-    // Ограничиваем значения в диапазон [0, 1] на всякий случай
     gradient = clamp(gradient, 0.0, 1.0);
 
-    // Смешиваем цвета
     fragColor = mix(color2, color1, gradient);
 }

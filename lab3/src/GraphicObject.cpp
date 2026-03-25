@@ -9,6 +9,7 @@ void GraphicObject::recalculateModelMatrix() {
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
     modelMatrix = glm::rotate(modelMatrix, angleY, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMatrix = glm::scale(modelMatrix, scale);
 }
 
 glm::mat4 GraphicObject::getModelMatrix() const {

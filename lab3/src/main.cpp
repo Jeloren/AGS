@@ -27,25 +27,49 @@ bool isRMBPressed = false;
 int lastMouseX = 0;
 int lastMouseY = 0;
 
-// Инициализация объектов по кругу (как в методичке)
 void initApp() {
     int count = 8;
     float radius = 4.0f;
     for (int i = 0; i < count; i++) {
-        // Вычисляем угол для каждого кубика
         float angle = 2.0f * 3.14159265f * i / count;
-        
-        // Считаем позицию
         glm::vec3 pos(radius * cos(angle), 0.0f, radius * sin(angle));
-        // Задаем цвет (синий)
         glm::vec4 color(0.0f, 0.0f, 1.0f, 1.0f);
-        // Задаем угол поворота (пусть смотрят в центр или 0)
         float rotAngle = 0.0f;
-
-        // Создаем объект, сразу передавая все аргументы в конструктор
         GraphicObject obj(pos, rotAngle, color);
-        
         graphicObjects.push_back(obj);
+    }
+
+    
+    // Задаем размер кубиков флага (чтобы они отличались от остальных)
+    float flagCubeSize = 0.5f; 
+    
+    // Вычисляем начальные координаты, чтобы флаг стоял ровно по центру (0,0,0)
+    float startX = - (4 * flagCubeSize) / 2.0f + (flagCubeSize / 2.0f);
+    float startY = - (3 * flagCubeSize) / 2.0f + (flagCubeSize / 2.0f);
+
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 4; col++) {
+            // Флаг стоит вертикально: меняем X и Y. Z = 0 (в центре кольца)
+            glm::vec3 pos(startX + col * flagCubeSize, startY + row * flagCubeSize, 0.0f);
+            
+            glm::vec4 color;
+            // Определяем цвет в зависимости от ряда (снизу вверх)
+            if (row == 0) {
+                color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f); // Красный (низ)
+            } else if (row == 1) {
+                color = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f); // Синий (середина)
+            } else {
+                color = glm::vec4(0.7f, 0.7f, 0.7f, 1.0f); // Светло-серый, вместо белого, чтобы было видно на фоне
+            }
+
+            GraphicObject obj(pos, 0.0f, color);
+            
+            // ВАЖНО: Применяем размер (масштаб) к объекту.
+            // Если в вашем классе GraphicObject есть метод setScale, раскомментируйте строку ниже:
+            obj.setScale(glm::vec3(flagCubeSize, flagCubeSize, flagCubeSize));
+            
+            graphicObjects.push_back(obj);
+        }
     }
 }
 

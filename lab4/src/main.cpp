@@ -29,63 +29,78 @@ Shader shader;
 vector<GraphicObject> graphicObjects;
 
 // вспомогательная функция для инициализации графических объектов
+// вспомогательная функция для инициализации графических объектов
 void initGraphicObjects()
 {
-	// ссылка на менеджер ресурсов (для удобства)
-	ResourceManager& rm = ResourceManager::instance();
-	// временная переменная для хранения идентификаторов меша
-	int meshId = -1;
-	// временная переменная для представления графического объекта
-	GraphicObject graphicObject;
-	// добавление графического объекта
-	meshId = rm.loadMesh("example/MESHES/buildings/house_2.obj");
-	graphicObject.setMeshId(meshId);
-	graphicObject.setColor(vec4(0.0, 0.0, 0.0, 1));
-	graphicObject.setPosition(vec3(0, 2, 0));
-	graphicObject.setAngle(0.0);
-	graphicObjects.push_back(graphicObject);
-	// добавление графического объекта
-	meshId = rm.loadMesh("example/MESHES/natures/big_tree.obj");
-	graphicObject.setMeshId(meshId);
-	graphicObject.setColor(vec4(0, 1, 0, 1));
-	graphicObject.setPosition(vec3(0, 1, -6));
-	graphicObject.setAngle(270.0);
-	graphicObjects.push_back(graphicObject);
-	// добавление графического объекта
-	meshId = rm.loadMesh("example/MESHES/natures/big_tree.obj");
-	graphicObject.setMeshId(meshId);
-	graphicObject.setColor(vec4(0, 1, 0, 1));
-	graphicObject.setPosition(vec3(-7, 1, 0));
-	graphicObject.setAngle(90.0);
-	graphicObjects.push_back(graphicObject);
-	// добавление графического объекта
-	meshId = rm.loadMesh("example/MESHES/natures/big_tree.obj");
-	graphicObject.setMeshId(meshId);
-	graphicObject.setColor(vec4(0, 1, 0, 1));
-	graphicObject.setPosition(vec3(0, 1, 7));
-	graphicObject.setAngle(0.0);
-	graphicObjects.push_back(graphicObject);
-	// добавление графического объекта
-	meshId = rm.loadMesh("example/MESHES/vehicles/jeep.obj");
-	graphicObject.setMeshId(meshId);
-	graphicObject.setColor(vec4(1, 0, 0, 1));
-	graphicObject.setPosition(vec3(7, 0, 0));
-	graphicObject.setAngle(-15.0);
-	graphicObjects.push_back(graphicObject);
-	// добавление графического объекта
-	meshId = rm.loadMesh("example/MESHES/vehicles/jeep.obj");
-	graphicObject.setMeshId(meshId);
-	graphicObject.setColor(vec4(1, 0, 0, 1));
-	graphicObject.setPosition(vec3(-6, 0, 3));
-	graphicObject.setAngle(67.0);
-	graphicObjects.push_back(graphicObject);
-	// добавление графического объекта
-	meshId = rm.loadMesh("example/MESHES/vehicles/police_car.obj");
-	graphicObject.setMeshId(meshId);
-	graphicObject.setColor(vec4(0, 0, 1, 1));
-	graphicObject.setPosition(vec3(-10, 0, 0));
-	graphicObject.setAngle(45.0);
-	graphicObjects.push_back(graphicObject);
+    ResourceManager& rm = ResourceManager::instance();
+    int meshId = -1;
+    GraphicObject graphicObject;
+
+    // Дом (сдвинут по диагонали, цвет - темный кирпич)
+    meshId = rm.loadMesh("example/MESHES/buildings/house_2.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.6f, 0.2f, 0.1f, 1.0f));
+    graphicObject.setPosition(vec3(5.0f, 2.0f, -5.0f));
+    graphicObject.setAngle(45.0f);
+    graphicObjects.push_back(graphicObject);
+
+    // Дерево 1 (темно-зеленое)
+    meshId = rm.loadMesh("example/MESHES/natures/big_tree.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.1f, 0.5f, 0.1f, 1.0f));
+    graphicObject.setPosition(vec3(3.0f, 1.0f, -8.0f));
+    graphicObject.setAngle(15.0f);
+    graphicObjects.push_back(graphicObject);
+
+    // Дерево 2 (осеннее, оранжевое)
+    meshId = rm.loadMesh("example/MESHES/natures/big_tree.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.8f, 0.4f, 0.0f, 1.0f));
+    graphicObject.setPosition(vec3(8.0f, 1.0f, -2.0f));
+    graphicObject.setAngle(120.0f);
+    graphicObjects.push_back(graphicObject);
+
+    // Дерево 3 (светло-зеленое)
+    meshId = rm.loadMesh("example/MESHES/natures/big_tree.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.5f, 0.8f, 0.2f, 1.0f));
+    graphicObject.setPosition(vec3(-4.0f, 1.0f, -6.0f));
+    graphicObject.setAngle(40.0f);
+    graphicObjects.push_back(graphicObject);
+
+    // Джип 1 (желтый, развернут)
+    meshId = rm.loadMesh("example/MESHES/vehicles/jeep.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.9f, 0.9f, 0.1f, 1.0f));
+    graphicObject.setPosition(vec3(-2.0f, 0.0f, 5.0f));
+    graphicObject.setAngle(135.0f);
+    graphicObjects.push_back(graphicObject);
+
+    // Джип 2 (бирюзовый)
+    meshId = rm.loadMesh("example/MESHES/vehicles/jeep.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.1f, 0.8f, 0.8f, 1.0f));
+    graphicObject.setPosition(vec3(2.0f, 0.0f, 6.0f));
+    graphicObject.setAngle(-20.0f);
+    graphicObjects.push_back(graphicObject);
+
+    // Полицейская машина (фиолетовая, стоит по центру)
+    meshId = rm.loadMesh("example/MESHES/vehicles/police_car.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.5f, 0.0f, 0.5f, 1.0f));
+    graphicObject.setPosition(vec3(0.0f, 0.0f, 0.0f));
+    graphicObject.setAngle(90.0f);
+    graphicObjects.push_back(graphicObject);
+
+	meshId = rm.loadMesh("example/MESHES/characters/E 45 Aircraft_obj.obj");
+    graphicObject.setMeshId(meshId);
+    graphicObject.setColor(vec4(0.8f, 0.6f, 0.4f, 1.0f)); 
+    graphicObject.setPosition(vec3(0.0f, 0.0f, 3.0f)); 
+    graphicObject.setAngle(230.0f);
+ 
+
+    graphicObjects.push_back(graphicObject);
+
 }
 
 // Функция получения времени симуляции
