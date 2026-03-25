@@ -1,14 +1,7 @@
-cmake_minimum_required(VERSION 3.10)
-project(laba04)
-
 set(BINARY_NAME laba04)
 
-# НАЙТИ ПАКЕТЫ - ЭТО КЛЮЧЕВОЕ!
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(GLUT REQUIRED)
 
-# Теперь можно использовать импортированные targets
+
 add_executable(${BINARY_NAME} 
     src/main.cpp
     src/Mesh.cpp
