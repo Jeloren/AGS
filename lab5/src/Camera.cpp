@@ -83,3 +83,12 @@ void Camera::moveOXZ(float dx, float dz)
 
     recalculateViewMatrix();
 }
+
+void Camera::moveVertical(float dy)
+{
+    // ����, ����, ����, ����, ����
+    position += up * dy;
+    target += up * dy;
+
+    recalculateViewMatrix();
+}

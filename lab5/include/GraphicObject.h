@@ -16,6 +16,11 @@ public:
 	void setPosition(const vec3& position);
 	// ���������� ���� �������� � �������� ������������ ��� OY �� ������� �������
 	void setAngle(float degree);
+	// ���������� ������ ����� ��� ����
+	void setRotation(float angleX, float angleY, float angleZ);
+	// ���������� ������ ���������
+	void setScale(float scale);
+	void setScale(float scaleX, float scaleY, float scaleZ);
 	// ���������� ������������� ������������� ����
 	void setMeshId(int id);
 	// ���������� ������������� ������
@@ -37,4 +42,11 @@ private:
 	vec4 color;
 	// ������� ������ (������ ������� � ����������)
 	mat4 modelMatrix;
+	// ������ ��� ������ ���� trensformations
+	vec3 position;
+	float angleY;
+	float angleX, angleZ;
+	vec3 scale;
+	// ��� ���� ������ ���� trensformations ��� ���
+	void updateModelMatrix();
 };

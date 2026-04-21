@@ -107,15 +107,16 @@ void initGraphicObjects()
     graphicObject.setAngle(90.0f);
     graphicObjects.push_back(graphicObject);
 
-	meshId = rm.loadMesh("example/MESHES/characters/E 45 Aircraft_obj.obj");
-	textureId = rm.loadTexture("example/TEXTURES/characters/E-45 _col.jpg");
+    // Кот (загружаем триангулированную и масштабированную модель)
+    meshId = rm.loadMesh("example/MESHES/cat/12221_Cat_v1_l3_tri.obj");
+    textureId = rm.loadTexture("example/TEXTURES/cat/Cat_diffuse.jpg");
     graphicObject.setMeshId(meshId);
-	graphicObject.setTextureId(textureId);
-    graphicObject.setColor(vec4(1.0f, 1.0f, 1.0f, 1.0f)); 
-    graphicObject.setPosition(vec3(0.0f, 5.0f, 15.0f)); 
+    graphicObject.setTextureId(textureId);
+    graphicObject.setColor(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    graphicObject.setPosition(vec3(0.0f, 0.0f, -5.0f));
+    graphicObject.setScale(0.5f); // Масштабируем кота вниз в 50 раз!
+    graphicObject.setRotation(270.0f, 0.0f, 0.0f); // Переворачиваем на 180 градусов вокруг оси X
     graphicObject.setAngle(0.0f);
- 
-
     graphicObjects.push_back(graphicObject);
 
 }
@@ -222,17 +223,23 @@ void simulation() {
 	Camera& camera = renderManager.getCamera();
 
 	// Обработка перемещения камеры с клавиатуры
-	if (keyState['W']) {
+	if (keyState['W'] || keyState['w']) {
 		camera.moveOXZ(0.0f, moveSpeed); // Движение вперед
 	}
-	if (keyState['S']) {
+	if (keyState['S'] || keyState['s']) {
 		camera.moveOXZ(0.0f, -moveSpeed); // Движение назад
 	}
-	if (keyState['A']) {
+	if (keyState['A'] || keyState['a']) {
 		camera.moveOXZ(-moveSpeed, 0.0f); // Движение влево
 	}
-	if (keyState['D']) {
+	if (keyState['D'] || keyState['d']) {
 		camera.moveOXZ(moveSpeed, 0.0f); // Движение вправо
+	}
+	if (keyState['Q'] || keyState['q']) {
+		camera.moveVertical(moveSpeed); // Движение вверх
+	}
+	if (keyState['E'] || keyState['e']) {
+		camera.moveVertical(-moveSpeed); // Движение вниз
 	}
 
 	// вращение обрабатывается в callback-е mouseMotion

@@ -18,6 +18,8 @@ public:
 	mat4& getViewMatrix();
 	// ����������� ������ � ����� ���������� � �������������� ��������� (OXZ)
 	void moveOXZ(float dx, float dz);
+	// ����������� ������ ������ (вверх/вниз)
+	void moveVertical(float dy);
 	// ��������� � �������������� � ������������ ��������� (���� �������� � ��������)
 	void rotate(float horizAngle, float vertAngle);
 	// ����������/������� ������ �/�� ����� ����������
