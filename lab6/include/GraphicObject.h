@@ -37,6 +37,8 @@ public:
 	int getTextureId() const;
 	// ������ ID ���������
 	int getMaterialId() const;
+	// Получение позиции объекта
+	vec3 getPosition() const;
 private:
 	// ������������� ������������� ����
 	int meshId;

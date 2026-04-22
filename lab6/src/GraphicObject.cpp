@@ -89,4 +89,6 @@ void GraphicObject::setMaterialId(int id) {
 
 int GraphicObject::getMaterialId() const {
 	return materialId;
+}vec3 GraphicObject::getPosition() const {
+return position;
 }
