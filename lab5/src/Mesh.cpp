@@ -10,19 +10,26 @@ using namespace glm;
 
 Mesh::Mesh() : vao(0), vertexBuffer(0), indexBuffer(0), vertexCount(0) {}
 
+static int parseIndex(const string& token) {
+    if (token.empty()) return -1;
+    try {
+        int index = stoi(token);
+        return index - 1;
+    }
+    catch (...) {
+        return -1;
+    }
+}
+
 bool Mesh::load(const  string& filename) {
     vector<Vertex> vertices;
     vector<GLuint> indices;
 
-    loadObjFile(filename, vertices, indices);
-
-    // ��������� ������ �� �����
     if (!loadObjFile(filename, vertices, indices)) {
         cerr << "Failed to load mesh data from file: " << filename << endl;
         return false;
     }
 
-    // ������� ������ OpenGL
     createBuffers(vertices, indices);
 
     return true;
@@ -37,78 +44,115 @@ void Mesh::drawOne() {
 }
 
 bool Mesh::loadObjFile(const  string& filename,  vector<Vertex>& vertices,  vector<GLuint>& indices) {
-     ifstream file(filename);
+    ifstream file(filename);
     if (!file.is_open()) {
-         cerr << "Can't open file: " << filename <<  endl;
+        cerr << "Can't open file: " << filename <<  endl;
         return false;
     }
 
-     vector<vec3> tempCoords;
-     vector< vec3> tempNormals;
-     vector< vec2> tempTexCoords;
-     vector<GLuint> coordIndices, normalIndices, texCoordIndices;
+    vector<vec3> tempCoords;
+    vector<vec3> tempNormals;
+    vector<vec2> tempTexCoords;
+    struct FaceIndex { int coordIndex; int texIndex; int normalIndex; };
+    vector<FaceIndex> faceIndices;
 
-     string line;
-    while ( getline(file, line)) {
-         istringstream iss(line);
-         string type;
+    string line;
+    while (getline(file, line)) {
+        if (line.empty() || line[0] == '#') continue;
+
+        istringstream iss(line);
+        string type;
         iss >> type;
 
-        if (type == "v") { // �������
-             vec3 coord;
+        if (type == "v") {
+            vec3 coord;
             iss >> coord.x >> coord.y >> coord.z;
             tempCoords.push_back(coord);
         }
-        else if (type == "vn") { // �������
-             vec3 normal;
+        else if (type == "vn") {
+            vec3 normal;
             iss >> normal.x >> normal.y >> normal.z;
             tempNormals.push_back(normal);
         }
-        else if (type == "vt") { // ���������� ����������
-             vec2 texCoord;
+        else if (type == "vt") {
+            vec2 texCoord;
             iss >> texCoord.x >> texCoord.y;
             tempTexCoords.push_back(texCoord);
         }
-        else if (type == "f") { // �����
-            for (int i = 0; i < 3; ++i) {
-                 string face;
-                iss >> face;
-                 replace(face.begin(), face.end(), '/', ' ');
-                 istringstream faceIss(face);
-                GLuint coordIndex, texCoordIndex, normalIndex;
-                faceIss >> coordIndex >> texCoordIndex >> normalIndex;
+        else if (type == "f") {
+            vector<FaceIndex> face;
+            string token;
+            while (iss >> token) {
+                FaceIndex idx = {-1, -1, -1};
+                size_t firstSlash = token.find('/');
+                size_t secondSlash = string::npos;
+                if (firstSlash != string::npos) {
+                    secondSlash = token.find('/', firstSlash + 1);
+                }
 
-                coordIndices.push_back(coordIndex - 1);
-                texCoordIndices.push_back(texCoordIndex - 1);
-                normalIndices.push_back(normalIndex - 1);
+                if (firstSlash == string::npos) {
+                    idx.coordIndex = parseIndex(token);
+                } else if (secondSlash == string::npos) {
+                    idx.coordIndex = parseIndex(token.substr(0, firstSlash));
+                    idx.texIndex = parseIndex(token.substr(firstSlash + 1));
+                } else {
+                    idx.coordIndex = parseIndex(token.substr(0, firstSlash));
+                    idx.texIndex = parseIndex(token.substr(firstSlash + 1, secondSlash - firstSlash - 1));
+                    idx.normalIndex = parseIndex(token.substr(secondSlash + 1));
+                }
+                face.push_back(idx);
+            }
+
+            if (face.size() < 3) continue;
+            for (size_t i = 1; i + 1 < face.size(); ++i) {
+                faceIndices.push_back(face[0]);
+                faceIndices.push_back(face[i]);
+                faceIndices.push_back(face[i + 1]);
             }
         }
     }
 
-    // ������ ������
-    for (size_t i = 0; i < coordIndices.size(); ++i) {
-        Vertex vertex;
-        vertex.coord[0] = tempCoords[coordIndices[i]].x;
-        vertex.coord[1] = tempCoords[coordIndices[i]].y;
-        vertex.coord[2] = tempCoords[coordIndices[i]].z;
+    vertices.reserve(faceIndices.size());
+    indices.reserve(faceIndices.size());
 
-        vertex.normal[0] = tempNormals[normalIndices[i]].x;
-        vertex.normal[1] = tempNormals[normalIndices[i]].y;
-        vertex.normal[2] = tempNormals[normalIndices[i]].z;
+    for (size_t i = 0; i < faceIndices.size(); ++i) {
+        const FaceIndex& idx = faceIndices[i];
+        Vertex vertex = {};
 
-        vertex.texCoord[0] = tempTexCoords[texCoordIndices[i]].x;
-        vertex.texCoord[1] = tempTexCoords[texCoordIndices[i]].y;
+        if (idx.coordIndex >= 0 && idx.coordIndex < static_cast<int>(tempCoords.size())) {
+            vertex.coord[0] = tempCoords[idx.coordIndex].x;
+            vertex.coord[1] = tempCoords[idx.coordIndex].y;
+            vertex.coord[2] = tempCoords[idx.coordIndex].z;
+        }
+        else {
+            vertex.coord[0] = vertex.coord[1] = vertex.coord[2] = 0.0f;
+        }
+
+        if (idx.normalIndex >= 0 && idx.normalIndex < static_cast<int>(tempNormals.size())) {
+            vertex.normal[0] = tempNormals[idx.normalIndex].x;
+            vertex.normal[1] = tempNormals[idx.normalIndex].y;
+            vertex.normal[2] = tempNormals[idx.normalIndex].z;
+        }
+        else {
+            vertex.normal[0] = 0.0f;
+            vertex.normal[1] = 0.0f;
+            vertex.normal[2] = 1.0f;
+        }
+
+        if (idx.texIndex >= 0 && idx.texIndex < static_cast<int>(tempTexCoords.size())) {
+            vertex.texCoord[0] = tempTexCoords[idx.texIndex].x;
+            vertex.texCoord[1] = tempTexCoords[idx.texIndex].y;
+        }
+        else {
+            vertex.texCoord[0] = 0.0f;
+            vertex.texCoord[1] = 0.0f;
+        }
 
         vertices.push_back(vertex);
-    }
-
-    // ������ ��������
-    for (size_t i = 0; i < coordIndices.size(); ++i) {
-        indices.push_back(i);
+        indices.push_back(static_cast<GLuint>(i));
     }
 
     vertexCount = static_cast<int>(indices.size());
-
     return true;
 }
 

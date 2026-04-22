@@ -107,8 +107,8 @@ void initGraphicObjects()
     graphicObject.setAngle(90.0f);
     graphicObjects.push_back(graphicObject);
 
-	meshId = rm.loadMesh("example/MESHES/characters/E 45 Aircraft_obj.obj");
-	textureId = rm.loadTexture("example/TEXTURES/characters/E-45 _col.jpg");
+	meshId = rm.loadMesh("example/MESHES/characters/dog.obj");
+	textureId = rm.loadTexture("example/MESHES/characters/dog_spotted.png");
     graphicObject.setMeshId(meshId);
 	graphicObject.setTextureId(textureId);
     graphicObject.setColor(vec4(1.0f, 1.0f, 1.0f, 1.0f)); 
